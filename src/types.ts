@@ -54,3 +54,15 @@ export interface AdminUser {
   email: string | null
   role: string
 }
+
+export type PhotoRestaurant = 'Senator' | 'Balkon'
+
+export interface RestaurantPhoto {
+  id: string
+  restaurant: PhotoRestaurant
+  imageUrl: string
+  active: boolean
+  createdAt: Timestamp
+}
+
+export type RestaurantPhotoFormData = Omit<RestaurantPhoto, 'id' | 'createdAt'>
