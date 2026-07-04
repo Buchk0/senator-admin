@@ -5,6 +5,7 @@ import { db } from '../firebase'
 import { seedCoupons } from '../utils/seedCoupons'
 import { seedSpaServices } from '../utils/seedSpaServices'
 import { seedMenu } from '../utils/seedMenu'
+import { seedGallery } from '../utils/seedGallery'
 
 interface Stats {
   totalCoupons: number
@@ -22,6 +23,8 @@ export default function Dashboard() {
   const [seedSpaMsg, setSeedSpaMsg] = useState('')
   const [seedingMenu, setSeedingMenu] = useState(false)
   const [seedMenuMsg, setSeedMenuMsg] = useState('')
+  const [seedingGallery, setSeedingGallery] = useState(false)
+  const [seedGalleryMsg, setSeedGalleryMsg] = useState('')
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -87,6 +90,20 @@ export default function Dashboard() {
       console.error(err)
     } finally {
       setSeedingMenu(false)
+    }
+  }
+
+  const handleSeedGallery = async () => {
+    setSeedingGallery(true)
+    setSeedGalleryMsg('')
+    try {
+      const { created } = await seedGallery()
+      setSeedGalleryMsg(`${created} фото галереи успешно загружены!`)
+    } catch (err) {
+      setSeedGalleryMsg('Ошибка при загрузке галереи. Проверьте консоль.')
+      console.error(err)
+    } finally {
+      setSeedingGallery(false)
     }
   }
 
@@ -162,6 +179,38 @@ export default function Dashboard() {
               {seedSpaMsg && (
                 <p className={`mt-3 text-sm font-medium ${seedSpaMsg.startsWith('Ошибка') ? 'text-red-600' : 'text-green-600'}`}>
                   {seedSpaMsg}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Seed gallery */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div className="flex items-start gap-4">
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+              style={{ backgroundColor: '#eff6ff' }}
+            >
+              🖼
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-gray-900">Заполнить галерею</p>
+              <p className="text-xs text-gray-500 mt-0.5 mb-4">
+                Загрузить 20 фото галереи (Senator, Balkon, Спа, VIP, Конференц) в Firebase Storage.
+                Займёт ~60-90 секунд.
+              </p>
+              <button
+                onClick={handleSeedGallery}
+                disabled={seedingGallery}
+                className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-60 transition-opacity"
+                style={{ backgroundColor: '#1a2035' }}
+              >
+                {seedingGallery ? 'Загрузка...' : 'Заполнить галерею'}
+              </button>
+              {seedGalleryMsg && (
+                <p className={`mt-3 text-sm font-medium ${seedGalleryMsg.startsWith('Ошибка') ? 'text-red-600' : 'text-green-600'}`}>
+                  {seedGalleryMsg}
                 </p>
               )}
             </div>

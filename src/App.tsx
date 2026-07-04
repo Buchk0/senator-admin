@@ -14,6 +14,8 @@ import PhotoList from './pages/photos/PhotoList'
 import PhotoForm from './pages/photos/PhotoForm'
 import MenuList from './pages/menu/MenuList'
 import MenuForm from './pages/menu/MenuForm'
+import GalleryList from './pages/gallery/GalleryList'
+import GalleryForm from './pages/gallery/GalleryForm'
 
 export default function App() {
   return (
@@ -42,6 +44,9 @@ export default function App() {
               <Route path="/menu" element={<MenuList />} />
               <Route path="/menu/new" element={<MenuForm />} />
               <Route path="/menu/:id" element={<MenuForm />} />
+              <Route path="/gallery" element={<GalleryList />} />
+              <Route path="/gallery/new" element={<GalleryForm />} />
+              <Route path="/gallery/:id" element={<GalleryForm />} />
             </Route>
           </Route>
 

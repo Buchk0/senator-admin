@@ -15,6 +15,7 @@ const navItems: NavItem[] = [
   { to: '/spa', label: 'Спа', icon: '🧖' },
   { to: '/photos', label: 'Фото', icon: '📷' },
   { to: '/menu', label: 'Меню', icon: '📖' },
+  { to: '/gallery', label: 'Галерея', icon: '🖼' },
 ]
 
 export default function Layout() {
