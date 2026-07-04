@@ -14,6 +14,7 @@ const navItems: NavItem[] = [
   { to: '/events', label: 'События', icon: '📅' },
   { to: '/spa', label: 'Спа', icon: '🧖' },
   { to: '/photos', label: 'Фото', icon: '📷' },
+  { to: '/menu', label: 'Меню', icon: '📖' },
 ]
 
 export default function Layout() {

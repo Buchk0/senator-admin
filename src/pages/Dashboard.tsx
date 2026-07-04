@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { db } from '../firebase'
 import { seedCoupons } from '../utils/seedCoupons'
 import { seedSpaServices } from '../utils/seedSpaServices'
+import { seedMenu } from '../utils/seedMenu'
 
 interface Stats {
   totalCoupons: number
@@ -19,6 +20,8 @@ export default function Dashboard() {
   const [seedMsg, setSeedMsg] = useState('')
   const [seedingSpa, setSeedingSpa] = useState(false)
   const [seedSpaMsg, setSeedSpaMsg] = useState('')
+  const [seedingMenu, setSeedingMenu] = useState(false)
+  const [seedMenuMsg, setSeedMenuMsg] = useState('')
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -35,7 +38,7 @@ export default function Dashboard() {
           totalEvents: totalEventsSnap.data().count,
         })
       } catch (err) {
-        setError('Failed to load stats.')
+        setError('Не удалось загрузить статистику.')
         console.error(err)
       } finally {
         setLoading(false)
@@ -50,9 +53,9 @@ export default function Dashboard() {
     setSeedMsg('')
     try {
       await seedCoupons()
-      setSeedMsg('All 12 coupons seeded successfully!')
+      setSeedMsg('12 купонов успешно добавлены!')
     } catch (err) {
-      setSeedMsg('Error seeding coupons. Check console.')
+      setSeedMsg('Ошибка при добавлении купонов. Проверьте консоль.')
       console.error(err)
     } finally {
       setSeeding(false)
@@ -64,26 +67,40 @@ export default function Dashboard() {
     setSeedSpaMsg('')
     try {
       await seedSpaServices()
-      setSeedSpaMsg('6 spa services seeded successfully!')
+      setSeedSpaMsg('6 услуг спа успешно добавлены!')
     } catch (err) {
-      setSeedSpaMsg('Error seeding spa services. Check console.')
+      setSeedSpaMsg('Ошибка при добавлении услуг. Проверьте консоль.')
       console.error(err)
     } finally {
       setSeedingSpa(false)
     }
   }
 
+  const handleSeedMenu = async () => {
+    setSeedingMenu(true)
+    setSeedMenuMsg('')
+    try {
+      const { created } = await seedMenu()
+      setSeedMenuMsg(`${created} страниц меню успешно загружены!`)
+    } catch (err) {
+      setSeedMenuMsg('Ошибка при загрузке меню. Проверьте консоль.')
+      console.error(err)
+    } finally {
+      setSeedingMenu(false)
+    }
+  }
+
   const statCards = [
-    { label: 'Total Coupons', value: stats.totalCoupons, icon: '🎟', color: '#1a2035' },
-    { label: 'Active Coupons', value: stats.activeCoupons, icon: '✅', color: '#16a34a' },
-    { label: 'Total Events', value: stats.totalEvents, icon: '📅', color: '#7c3aed' },
+    { label: 'Всего купонов', value: stats.totalCoupons, icon: '🎟', color: '#1a2035' },
+    { label: 'Активных купонов', value: stats.activeCoupons, icon: '✅', color: '#16a34a' },
+    { label: 'Всего событий', value: stats.totalEvents, icon: '📅', color: '#7c3aed' },
   ]
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-sm text-gray-500 mt-1">Welcome back to the Senator Hotel admin panel.</p>
+        <h1 className="text-2xl font-bold text-gray-900">Главная</h1>
+        <p className="text-sm text-gray-500 mt-1">Добро пожаловать в панель администратора.</p>
       </div>
 
       {error && (
@@ -117,7 +134,7 @@ export default function Dashboard() {
 
       {/* Database tools */}
       <div className="mb-10">
-        <h2 className="text-base font-semibold text-gray-700 mb-4">Database Tools</h2>
+        <h2 className="text-base font-semibold text-gray-700 mb-4">Инструменты базы данных</h2>
         <div className="flex flex-col gap-4 max-w-xl">
 
         {/* Seed spa services */}
@@ -130,9 +147,9 @@ export default function Dashboard() {
               🧖
             </div>
             <div className="flex-1">
-              <p className="font-semibold text-gray-900">Seed Spa Services</p>
+              <p className="font-semibold text-gray-900">Заполнить услуги спа</p>
               <p className="text-xs text-gray-500 mt-0.5 mb-4">
-                Push 6 default spa services to Firestore. Images can be added via the Spa section.
+                Добавить 6 базовых услуг спа в Firestore. Изображения можно добавить через раздел Спа.
               </p>
               <button
                 onClick={handleSeedSpa}
@@ -140,11 +157,43 @@ export default function Dashboard() {
                 className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-60 transition-opacity"
                 style={{ backgroundColor: '#1a2035' }}
               >
-                {seedingSpa ? 'Seeding...' : 'Seed Spa Services'}
+                {seedingSpa ? 'Загрузка...' : 'Заполнить услуги спа'}
               </button>
               {seedSpaMsg && (
-                <p className={`mt-3 text-sm font-medium ${seedSpaMsg.startsWith('Error') ? 'text-red-600' : 'text-green-600'}`}>
+                <p className={`mt-3 text-sm font-medium ${seedSpaMsg.startsWith('Ошибка') ? 'text-red-600' : 'text-green-600'}`}>
                   {seedSpaMsg}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Seed menu pages */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div className="flex items-start gap-4">
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+              style={{ backgroundColor: '#fff7ed' }}
+            >
+              📖
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-gray-900">Заполнить меню</p>
+              <p className="text-xs text-gray-500 mt-0.5 mb-4">
+                Загрузить 14 страниц меню (Senator 8 + Balkon 6) в Firebase Storage и создать
+                документы в коллекции menu. Займёт ~30-60 секунд.
+              </p>
+              <button
+                onClick={handleSeedMenu}
+                disabled={seedingMenu}
+                className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-60 transition-opacity"
+                style={{ backgroundColor: '#1a2035' }}
+              >
+                {seedingMenu ? 'Загрузка...' : 'Заполнить меню'}
+              </button>
+              {seedMenuMsg && (
+                <p className={`mt-3 text-sm font-medium ${seedMenuMsg.startsWith('Ошибка') ? 'text-red-600' : 'text-green-600'}`}>
+                  {seedMenuMsg}
                 </p>
               )}
             </div>
@@ -161,10 +210,10 @@ export default function Dashboard() {
               🌱
             </div>
             <div className="flex-1">
-              <p className="font-semibold text-gray-900">Seed Default Coupons</p>
+              <p className="font-semibold text-gray-900">Заполнить купоны</p>
               <p className="text-xs text-gray-500 mt-0.5 mb-4">
-                Push all 12 default coupons (Welcome, Seasonal, Always) to Firestore.
-                Safe to run multiple times — existing coupons will be overwritten.
+                Добавить 12 стандартных купонов (Приветственные, Сезонные, Постоянные) в Firestore.
+                Безопасно запускать повторно — существующие купоны будут перезаписаны.
               </p>
               <button
                 onClick={handleSeed}
@@ -172,10 +221,10 @@ export default function Dashboard() {
                 className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-60 transition-opacity"
                 style={{ backgroundColor: '#1a2035' }}
               >
-                {seeding ? 'Seeding...' : 'Seed Coupons'}
+                {seeding ? 'Загрузка...' : 'Заполнить купоны'}
               </button>
               {seedMsg && (
-                <p className={`mt-3 text-sm font-medium ${seedMsg.startsWith('Error') ? 'text-red-600' : 'text-green-600'}`}>
+                <p className={`mt-3 text-sm font-medium ${seedMsg.startsWith('Ошибка') ? 'text-red-600' : 'text-green-600'}`}>
                   {seedMsg}
                 </p>
               )}

@@ -66,3 +66,24 @@ export interface RestaurantPhoto {
 }
 
 export type RestaurantPhotoFormData = Omit<RestaurantPhoto, 'id' | 'createdAt'>
+
+export interface MenuPage {
+  id: string
+  restaurant: PhotoRestaurant
+  imageUrl: string
+  order: number
+  active: boolean
+  createdAt: Timestamp
+}
+
+export type MenuPageFormData = Omit<MenuPage, 'id' | 'createdAt'>
+
+export interface GalleryPhoto {
+  id: string
+  imageUrl: string
+  order: number
+  active: boolean
+  createdAt: Timestamp
+}
+
+export type GalleryPhotoFormData = Omit<GalleryPhoto, 'id' | 'createdAt'>

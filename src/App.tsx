@@ -12,6 +12,8 @@ import SpaList from './pages/spa/SpaList'
 import SpaForm from './pages/spa/SpaForm'
 import PhotoList from './pages/photos/PhotoList'
 import PhotoForm from './pages/photos/PhotoForm'
+import MenuList from './pages/menu/MenuList'
+import MenuForm from './pages/menu/MenuForm'
 
 export default function App() {
   return (
@@ -37,6 +39,9 @@ export default function App() {
               <Route path="/photos" element={<PhotoList />} />
               <Route path="/photos/new" element={<PhotoForm />} />
               <Route path="/photos/:id" element={<PhotoForm />} />
+              <Route path="/menu" element={<MenuList />} />
+              <Route path="/menu/new" element={<MenuForm />} />
+              <Route path="/menu/:id" element={<MenuForm />} />
             </Route>
           </Route>
 
