@@ -17,7 +17,7 @@ export default function EventList() {
       const snap = await getDocs(q)
       setEvents(snap.docs.map((d) => ({ id: d.id, ...d.data() } as HotelEvent)))
     } catch (err) {
-      setError('Failed to load events.')
+      setError('Не удалось загрузить события.')
       console.error(err)
     } finally {
       setLoading(false)
@@ -28,18 +28,16 @@ export default function EventList() {
 
   const handleToggleActive = async (event: HotelEvent) => {
     setTogglingId(event.id)
-    // Optimistic update
     setEvents((prev) =>
       prev.map((e) => (e.id === event.id ? { ...e, active: !e.active } : e))
     )
     try {
       await updateDoc(doc(db, 'events', event.id), { active: !event.active })
     } catch (err) {
-      // Revert on failure
       setEvents((prev) =>
         prev.map((e) => (e.id === event.id ? { ...e, active: event.active } : e))
       )
-      setError('Failed to update event.')
+      setError('Не удалось обновить событие.')
       console.error(err)
     } finally {
       setTogglingId(null)
@@ -47,13 +45,13 @@ export default function EventList() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this event? This cannot be undone.')) return
+    if (!window.confirm('Вы уверены, что хотите удалить это событие? Это действие нельзя отменить.')) return
     setDeletingId(id)
     try {
       await deleteDoc(doc(db, 'events', id))
       setEvents((prev) => prev.filter((e) => e.id !== id))
     } catch (err) {
-      setError('Failed to delete event.')
+      setError('Не удалось удалить событие.')
       console.error(err)
     } finally {
       setDeletingId(null)
@@ -61,18 +59,18 @@ export default function EventList() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Events</h1>
-          <p className="text-sm text-gray-500 mt-1">{events.length} total</p>
+          <h1 className="text-2xl font-bold text-gray-900">События</h1>
+          <p className="text-sm text-gray-500 mt-1">{events.length} всего</p>
         </div>
         <Link
           to="/events/new"
           className="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
           style={{ backgroundColor: '#1a2035' }}
         >
-          + Add Event
+          + Добавить событие
         </Link>
       </div>
 
@@ -82,7 +80,7 @@ export default function EventList() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <div className="w-8 h-8 border-4 border-gold border-t-transparent rounded-full animate-spin" />
@@ -90,19 +88,19 @@ export default function EventList() {
         ) : events.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-gray-400">
             <span className="text-4xl mb-3">📅</span>
-            <p className="text-sm">No events yet.</p>
+            <p className="text-sm">Событий пока нет.</p>
             <Link to="/events/new" className="mt-3 text-sm font-medium" style={{ color: '#c69c6d' }}>
-              Add your first event
+              Добавить первое событие
             </Link>
           </div>
         ) : (
-          <table className="w-full text-sm">
+          <table className="w-full text-sm min-w-[420px]">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Image</th>
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Title</th>
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Active</th>
-                <th className="text-right px-5 py-3 font-semibold text-gray-600">Actions</th>
+                <th className="text-left px-5 py-3 font-semibold text-gray-600">Фото</th>
+                <th className="text-left px-5 py-3 font-semibold text-gray-600">Заголовок</th>
+                <th className="text-left px-5 py-3 font-semibold text-gray-600">Активен</th>
+                <th className="text-right px-5 py-3 font-semibold text-gray-600">Действия</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -131,7 +129,7 @@ export default function EventList() {
                       className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none disabled:opacity-50 ${
                         event.active ? 'bg-green-500' : 'bg-gray-300'
                       }`}
-                      title={event.active ? 'Deactivate' : 'Activate'}
+                      title={event.active ? 'Деактивировать' : 'Активировать'}
                     >
                       <span
                         className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${
@@ -146,14 +144,14 @@ export default function EventList() {
                         to={`/events/${event.id}`}
                         className="px-3 py-1 rounded-md text-xs font-medium border border-gray-200 text-gray-600 hover:border-gray-400 transition-colors"
                       >
-                        Edit
+                        Изменить
                       </Link>
                       <button
                         onClick={() => handleDelete(event.id)}
                         disabled={deletingId === event.id}
                         className="px-3 py-1 rounded-md text-xs font-medium border border-red-200 text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
                       >
-                        {deletingId === event.id ? '...' : 'Delete'}
+                        {deletingId === event.id ? '...' : 'Удалить'}
                       </button>
                     </div>
                   </td>

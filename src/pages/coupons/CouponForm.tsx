@@ -88,10 +88,10 @@ export default function CouponForm() {
           })
           setImagePreview(data.imageUrl ?? '')
         } else {
-          setError('Coupon not found.')
+          setError('Купон не найден.')
         }
       } catch (err) {
-        setError('Failed to load coupon.')
+        setError('Не удалось загрузить купон.')
         console.error(err)
       } finally {
         setLoading(false)
@@ -122,10 +122,10 @@ export default function CouponForm() {
   }
 
   const validate = (): string | null => {
-    if (!form.emoji.trim()) return 'Emoji is required.'
-    if (!form.title.en.trim()) return 'Title (EN) is required.'
-    if (!form.description.en.trim()) return 'Description (EN) is required.'
-    if (!form.terms.en.trim()) return 'Terms (EN) is required.'
+    if (!form.emoji.trim()) return 'Выберите эмодзи.'
+    if (!form.title.en.trim()) return 'Укажите заголовок (EN).'
+    if (!form.description.en.trim()) return 'Укажите описание (EN).'
+    if (!form.terms.en.trim()) return 'Укажите условия (EN).'
     return null
   }
 
@@ -151,7 +151,7 @@ export default function CouponForm() {
       }
       navigate('/coupons')
     } catch (err) {
-      setError('Failed to save coupon.')
+      setError('Не удалось сохранить купон.')
       console.error(err)
       setSaving(false)
       setUploadProgress(null)
@@ -160,23 +160,23 @@ export default function CouponForm() {
 
   if (loading) {
     return (
-      <div className="p-8 flex items-center justify-center">
+      <div className="p-4 sm:p-8 flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-gold border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="p-8 max-w-2xl">
+    <div className="p-4 sm:p-8 max-w-2xl">
       <div className="mb-6">
         <button
           onClick={() => navigate('/coupons')}
           className="text-sm text-gray-500 hover:text-gray-700 mb-4 flex items-center gap-1"
         >
-          ← Back to Coupons
+          ← Назад к купонам
         </button>
         <h1 className="text-2xl font-bold text-gray-900">
-          {isNew ? 'Add Coupon' : 'Edit Coupon'}
+          {isNew ? 'Добавить купон' : 'Редактировать купон'}
         </h1>
       </div>
 
@@ -188,10 +188,10 @@ export default function CouponForm() {
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
         {/* Row: emoji + type + restaurant */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="relative" ref={emojiRef}>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Emoji <span className="text-red-500">*</span>
+              Эмодзи <span className="text-red-500">*</span>
             </label>
             <button
               type="button"
@@ -199,10 +199,10 @@ export default function CouponForm() {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gold bg-white text-left flex items-center gap-2"
             >
               <span className="text-xl">{form.emoji || '🎁'}</span>
-              <span className="text-gray-400 text-xs">{form.emoji ? 'Change' : 'Pick emoji'}</span>
+              <span className="text-gray-400 text-xs">{form.emoji ? 'Изменить' : 'Выбрать'}</span>
             </button>
             {emojiOpen && (
-              <div className="absolute z-10 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg p-2 grid grid-cols-8 gap-1 w-64">
+              <div className="absolute z-10 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg p-2 grid grid-cols-8 gap-1 w-64 max-w-[calc(100vw-2rem)]">
                 {EMOJI_OPTIONS.map((e) => (
                   <button
                     key={e}
@@ -218,7 +218,7 @@ export default function CouponForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Тип</label>
             <select
               value={form.type}
               onChange={(e) => {
@@ -234,7 +234,7 @@ export default function CouponForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Restaurant</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Ресторан</label>
             <select
               value={form.restaurant}
               onChange={(e) => setForm({ ...form, restaurant: e.target.value as Restaurant })}
@@ -256,13 +256,13 @@ export default function CouponForm() {
               onChange={(e) => setForm({ ...form, active: e.target.checked })}
               className="w-4 h-4 rounded accent-navy"
             />
-            Active
+            Активен
           </label>
         </div>
 
         {/* Image upload */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Изображение</label>
           {imagePreview && (
             <div className="mb-3">
               <img
@@ -277,9 +277,9 @@ export default function CouponForm() {
             className="border-2 border-dashed border-gray-200 rounded-lg p-5 text-center cursor-pointer hover:border-gray-400 transition-colors"
           >
             <p className="text-sm text-gray-500">
-              {imageFile ? imageFile.name : 'Click to select an image'}
+              {imageFile ? imageFile.name : 'Нажмите, чтобы выбрать изображение'}
             </p>
-            <p className="text-xs text-gray-400 mt-1">PNG, JPG, WEBP up to 10MB</p>
+            <p className="text-xs text-gray-400 mt-1">PNG, JPG, WEBP до 10 МБ</p>
           </div>
           <input
             ref={fileInputRef}
@@ -296,7 +296,7 @@ export default function CouponForm() {
                   style={{ width: `${uploadProgress}%`, backgroundColor: '#c69c6d' }}
                 />
               </div>
-              <p className="text-xs text-gray-500 mt-1">{uploadProgress}% uploaded</p>
+              <p className="text-xs text-gray-500 mt-1">{uploadProgress}% загружено</p>
             </div>
           )}
         </div>
@@ -305,14 +305,14 @@ export default function CouponForm() {
 
         {/* Localized fields */}
         <LangTabs
-          label="Title"
+          label="Заголовок"
           value={form.title}
           onChange={(val) => setForm({ ...form, title: val })}
           required
         />
 
         <LangTabs
-          label="Description"
+          label="Описание"
           value={form.description}
           onChange={(val) => setForm({ ...form, description: val })}
           multiline
@@ -320,7 +320,7 @@ export default function CouponForm() {
         />
 
         <LangTabs
-          label="Terms"
+          label="Условия"
           value={form.terms}
           onChange={(val) => setForm({ ...form, terms: val })}
           multiline
@@ -335,14 +335,14 @@ export default function CouponForm() {
             className="px-6 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
             style={{ backgroundColor: '#1a2035' }}
           >
-            {saving ? (uploadProgress !== null ? `Uploading ${uploadProgress}%...` : 'Saving...') : isNew ? 'Create Coupon' : 'Save Changes'}
+            {saving ? (uploadProgress !== null ? `Загрузка ${uploadProgress}%...` : 'Сохранение...') : isNew ? 'Создать купон' : 'Сохранить'}
           </button>
           <button
             type="button"
             onClick={() => navigate('/coupons')}
             className="px-6 py-2.5 rounded-lg text-sm font-medium text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors"
           >
-            Cancel
+            Отмена
           </button>
         </div>
       </form>

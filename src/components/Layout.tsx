@@ -10,10 +10,12 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { to: '/', label: 'Главная', icon: '⊞' },
+  { to: '/promotions', label: 'Акции', icon: '📣' },
   { to: '/coupons', label: 'Купоны', icon: '🎟' },
   { to: '/events', label: 'События', icon: '📅' },
   { to: '/spa', label: 'Спа', icon: '🧖' },
-  { to: '/photos', label: 'Фото', icon: '📷' },
+  { to: '/photos/senator', label: 'Фото Senator', icon: '📷' },
+  { to: '/photos/balkon', label: 'Фото Balkon', icon: '📷' },
   { to: '/menu', label: 'Меню', icon: '📖' },
   { to: '/gallery', label: 'Галерея', icon: '🖼' },
 ]

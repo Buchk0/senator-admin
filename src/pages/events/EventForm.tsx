@@ -53,10 +53,10 @@ export default function EventForm() {
           })
           setImagePreview(data.imageUrl || '')
         } else {
-          setError('Event not found.')
+          setError('Событие не найдено.')
         }
       } catch (err) {
-        setError('Failed to load event.')
+        setError('Не удалось загрузить событие.')
         console.error(err)
       } finally {
         setLoading(false)
@@ -87,8 +87,8 @@ export default function EventForm() {
   }
 
   const validate = (): string | null => {
-    if (!form.title.en.trim()) return 'Title (EN) is required.'
-    if (isNew && !imageFile && !form.imageUrl) return 'An image is required.'
+    if (!form.title.en.trim()) return 'Укажите заголовок (EN).'
+    if (isNew && !imageFile && !form.imageUrl) return 'Изображение обязательно.'
     return null
   }
 
@@ -111,7 +111,7 @@ export default function EventForm() {
       }
       navigate('/events')
     } catch (err) {
-      setError('Failed to save event.')
+      setError('Не удалось сохранить событие.')
       console.error(err)
       setSaving(false)
       setUploadProgress(null)
@@ -120,23 +120,23 @@ export default function EventForm() {
 
   if (loading) {
     return (
-      <div className="p-8 flex items-center justify-center">
+      <div className="p-4 sm:p-8 flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-gold border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="p-8 max-w-2xl">
+    <div className="p-4 sm:p-8 max-w-2xl">
       <div className="mb-6">
         <button
           onClick={() => navigate('/events')}
           className="text-sm text-gray-500 hover:text-gray-700 mb-4 flex items-center gap-1"
         >
-          ← Back to Events
+          ← Назад к событиям
         </button>
         <h1 className="text-2xl font-bold text-gray-900">
-          {isNew ? 'Add Event' : 'Edit Event'}
+          {isNew ? 'Добавить событие' : 'Редактировать событие'}
         </h1>
       </div>
 
@@ -148,7 +148,7 @@ export default function EventForm() {
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
         <LangTabs
-          label="Title"
+          label="Заголовок"
           value={form.title}
           onChange={(val) => setForm({ ...form, title: val })}
           required
@@ -157,7 +157,7 @@ export default function EventForm() {
         {/* Image upload */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Image {isNew && <span className="text-red-500">*</span>}
+            Изображение {isNew && <span className="text-red-500">*</span>}
           </label>
           {imagePreview && (
             <div className="mb-3">
@@ -173,9 +173,9 @@ export default function EventForm() {
             className="border-2 border-dashed border-gray-200 rounded-lg p-5 text-center cursor-pointer hover:border-gray-400 transition-colors"
           >
             <p className="text-sm text-gray-500">
-              {imageFile ? imageFile.name : 'Click to select an image'}
+              {imageFile ? imageFile.name : 'Нажмите, чтобы выбрать изображение'}
             </p>
-            <p className="text-xs text-gray-400 mt-1">PNG, JPG, WEBP up to 10MB</p>
+            <p className="text-xs text-gray-400 mt-1">PNG, JPG, WEBP до 10 МБ</p>
           </div>
           <input
             ref={fileInputRef}
@@ -192,7 +192,7 @@ export default function EventForm() {
                   style={{ width: `${uploadProgress}%`, backgroundColor: '#c69c6d' }}
                 />
               </div>
-              <p className="text-xs text-gray-500 mt-1">{uploadProgress}% uploaded</p>
+              <p className="text-xs text-gray-500 mt-1">{uploadProgress}% загружено</p>
             </div>
           )}
         </div>
@@ -204,7 +204,7 @@ export default function EventForm() {
             onChange={(e) => setForm({ ...form, active: e.target.checked })}
             className="w-4 h-4 rounded accent-navy"
           />
-          Active
+          Активен
         </label>
 
         <div className="flex gap-3 pt-2">
@@ -214,14 +214,14 @@ export default function EventForm() {
             className="px-6 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
             style={{ backgroundColor: '#1a2035' }}
           >
-            {saving ? (uploadProgress !== null ? `Uploading ${uploadProgress}%...` : 'Saving...') : isNew ? 'Create Event' : 'Save Changes'}
+            {saving ? (uploadProgress !== null ? `Загрузка ${uploadProgress}%...` : 'Сохранение...') : isNew ? 'Создать событие' : 'Сохранить'}
           </button>
           <button
             type="button"
             onClick={() => navigate('/events')}
             className="px-6 py-2.5 rounded-lg text-sm font-medium text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors"
           >
-            Cancel
+            Отмена
           </button>
         </div>
       </form>

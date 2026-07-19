@@ -24,7 +24,7 @@ export default function Login() {
 
       if (!snap.exists() || snap.data().role !== 'admin') {
         await auth.signOut()
-        setError('Access denied. Admin privileges required.')
+        setError('Доступ запрещён. Требуются права администратора.')
         setLoading(false)
         return
       }
@@ -33,11 +33,11 @@ export default function Login() {
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Login failed'
       if (message.includes('invalid-credential') || message.includes('wrong-password') || message.includes('user-not-found')) {
-        setError('Invalid email or password.')
+        setError('Неверный номер или пароль.')
       } else if (message.includes('too-many-requests')) {
-        setError('Too many failed attempts. Please try again later.')
+        setError('Слишком много попыток. Попробуйте позже.')
       } else {
-        setError('Login failed. Please check your credentials.')
+        setError('Ошибка входа. Проверьте данные.')
       }
       setLoading(false)
     }
@@ -55,7 +55,7 @@ export default function Login() {
             <span style={{ color: '#c69c6d' }}>S</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Senator Hotel</h1>
-          <p className="text-sm text-gray-500 mt-1">Admin Panel</p>
+          <p className="text-sm text-gray-500 mt-1">Панель администратора</p>
         </div>
 
         {error && (
@@ -67,7 +67,7 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Phone number
+              Номер телефона
             </label>
             <input
               type="tel"
@@ -81,7 +81,7 @@ export default function Login() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
+              Пароль
             </label>
             <input
               type="password"
@@ -99,7 +99,7 @@ export default function Login() {
             className="w-full py-3 rounded-lg text-sm font-semibold transition-opacity disabled:opacity-60"
             style={{ backgroundColor: '#1a2035', color: '#c69c6d' }}
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? 'Вход...' : 'Войти'}
           </button>
         </form>
       </div>

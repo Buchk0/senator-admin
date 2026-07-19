@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, FormEvent } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, Navigate } from 'react-router-dom'
 import {
   doc,
   getDoc,
@@ -16,18 +16,22 @@ import {
 import { db, storage } from '../../firebase'
 import type { RestaurantPhotoFormData, PhotoRestaurant } from '../../types'
 
-const defaultForm: RestaurantPhotoFormData = {
-  restaurant: 'Senator',
-  imageUrl: '',
-  active: true,
+const RESTAURANT_BY_SLUG: Record<string, PhotoRestaurant> = {
+  senator: 'Senator',
+  balkon: 'Balkon',
 }
 
 export default function PhotoForm() {
-  const { id } = useParams<{ id: string }>()
+  const { restaurant: slug, id } = useParams<{ restaurant: string; id?: string }>()
+  const restaurant = slug ? RESTAURANT_BY_SLUG[slug] : undefined
   const isNew = !id || id === 'new'
   const navigate = useNavigate()
 
-  const [form, setForm] = useState<RestaurantPhotoFormData>(defaultForm)
+  const [form, setForm] = useState<RestaurantPhotoFormData>({
+    restaurant: restaurant ?? 'Senator',
+    imageUrl: '',
+    active: true,
+  })
   const [loading, setLoading] = useState(!isNew)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -37,10 +41,10 @@ export default function PhotoForm() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    if (isNew) return
+    if (isNew || !id) return
     const fetchPhoto = async () => {
       try {
-        const snap = await getDoc(doc(db, 'restaurantPhotos', id!))
+        const snap = await getDoc(doc(db, 'restaurantPhotos', id))
         if (snap.exists()) {
           const data = snap.data()
           setForm({
@@ -61,6 +65,8 @@ export default function PhotoForm() {
     }
     fetchPhoto()
   }, [id, isNew])
+
+  if (!restaurant) return <Navigate to="/photos/senator" replace />
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -100,12 +106,12 @@ export default function PhotoForm() {
       if (isNew) {
         const newRef = doc(collection(db, 'restaurantPhotos'))
         const imageUrl = await uploadImage(newRef.id)
-        await setDoc(newRef, { ...form, imageUrl, createdAt: serverTimestamp() })
+        await setDoc(newRef, { ...form, restaurant, imageUrl, createdAt: serverTimestamp() })
       } else {
         const imageUrl = await uploadImage(id!)
-        await updateDoc(doc(db, 'restaurantPhotos', id!), { ...form, imageUrl })
+        await updateDoc(doc(db, 'restaurantPhotos', id!), { ...form, restaurant, imageUrl })
       }
-      navigate('/photos')
+      navigate(`/photos/${slug}`)
     } catch (err) {
       setError('Не удалось сохранить фото.')
       console.error(err)
@@ -126,13 +132,13 @@ export default function PhotoForm() {
     <div className="p-4 sm:p-8 max-w-2xl">
       <div className="mb-6">
         <button
-          onClick={() => navigate('/photos')}
+          onClick={() => navigate(`/photos/${slug}`)}
           className="text-sm text-gray-500 hover:text-gray-700 mb-4 flex items-center gap-1"
         >
           ← Назад к фотографиям
         </button>
         <h1 className="text-2xl font-bold text-gray-900">
-          {isNew ? 'Добавить фото' : 'Редактировать фото'}
+          {isNew ? `Добавить фото — ${restaurant}` : `Редактировать фото — ${restaurant}`}
         </h1>
       </div>
 
@@ -143,26 +149,6 @@ export default function PhotoForm() {
       )}
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
-        {/* Restaurant */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Ресторан</label>
-          <div className="flex gap-2">
-            {(['Senator', 'Balkon'] as PhotoRestaurant[]).map((r) => (
-              <button
-                key={r}
-                type="button"
-                onClick={() => setForm({ ...form, restaurant: r })}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  form.restaurant === r ? 'text-white' : 'bg-white text-gray-700 border border-gray-200'
-                }`}
-                style={form.restaurant === r ? { backgroundColor: '#1a2035' } : {}}
-              >
-                {r}
-              </button>
-            ))}
-          </div>
-        </div>
-
         {/* Image upload */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -227,7 +213,7 @@ export default function PhotoForm() {
           </button>
           <button
             type="button"
-            onClick={() => navigate('/photos')}
+            onClick={() => navigate(`/photos/${slug}`)}
             className="px-6 py-2.5 rounded-lg text-sm font-medium text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors"
           >
             Отмена

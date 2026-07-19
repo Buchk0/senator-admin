@@ -48,10 +48,10 @@ export default function SpaForm() {
           })
           setImagePreview(data.imageUrl ?? '')
         } else {
-          setError('Service not found.')
+          setError('Услуга не найдена.')
         }
       } catch (err) {
-        setError('Failed to load service.')
+        setError('Не удалось загрузить услугу.')
         console.error(err)
       } finally {
         setLoading(false)
@@ -82,10 +82,10 @@ export default function SpaForm() {
   }
 
   const validate = (): string | null => {
-    if (!form.name.en.trim()) return 'Name (EN) is required.'
-    if (!form.duration.trim()) return 'Duration is required.'
-    if (!form.price.trim()) return 'Price is required.'
-    if (isNew && !imageFile && !form.imageUrl) return 'An image is required.'
+    if (!form.name.en.trim()) return 'Укажите название (EN).'
+    if (!form.duration.trim()) return 'Укажите длительность.'
+    if (!form.price.trim()) return 'Укажите цену.'
+    if (isNew && !imageFile && !form.imageUrl) return 'Изображение обязательно.'
     return null
   }
 
@@ -108,7 +108,7 @@ export default function SpaForm() {
       }
       navigate('/spa')
     } catch (err) {
-      setError('Failed to save service.')
+      setError('Не удалось сохранить услугу.')
       console.error(err)
       setSaving(false)
       setUploadProgress(null)
@@ -117,23 +117,23 @@ export default function SpaForm() {
 
   if (loading) {
     return (
-      <div className="p-8 flex items-center justify-center">
+      <div className="p-4 sm:p-8 flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#c69c6d', borderTopColor: 'transparent' }} />
       </div>
     )
   }
 
   return (
-    <div className="p-8 max-w-2xl">
+    <div className="p-4 sm:p-8 max-w-2xl">
       <div className="mb-6">
         <button
           onClick={() => navigate('/spa')}
           className="text-sm text-gray-500 hover:text-gray-700 mb-4 flex items-center gap-1"
         >
-          ← Back to Spa
+          ← Назад к спа
         </button>
         <h1 className="text-2xl font-bold text-gray-900">
-          {isNew ? 'Add Spa Service' : 'Edit Spa Service'}
+          {isNew ? 'Добавить услугу' : 'Редактировать услугу'}
         </h1>
       </div>
 
@@ -145,31 +145,30 @@ export default function SpaForm() {
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
 
-        {/* Name (3 langs) */}
         <LangTabs
-          label="Name"
+          label="Название"
           value={form.name}
           onChange={(val) => setForm({ ...form, name: val })}
           required
         />
 
         {/* Duration + Price */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Duration <span className="text-red-500">*</span>
+              Длительность <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               value={form.duration}
               onChange={(e) => setForm({ ...form, duration: e.target.value })}
-              placeholder="60 min"
+              placeholder="60 мин"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gold"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Price <span className="text-red-500">*</span>
+              Цена <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -184,7 +183,7 @@ export default function SpaForm() {
         {/* Image upload */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Image {isNew && <span className="text-red-500">*</span>}
+            Изображение {isNew && <span className="text-red-500">*</span>}
           </label>
           {imagePreview && (
             <div className="mb-3">
@@ -200,9 +199,9 @@ export default function SpaForm() {
             className="border-2 border-dashed border-gray-200 rounded-lg p-5 text-center cursor-pointer hover:border-gray-400 transition-colors"
           >
             <p className="text-sm text-gray-500">
-              {imageFile ? imageFile.name : 'Click to select an image'}
+              {imageFile ? imageFile.name : 'Нажмите, чтобы выбрать изображение'}
             </p>
-            <p className="text-xs text-gray-400 mt-1">PNG, JPG, WEBP up to 10MB</p>
+            <p className="text-xs text-gray-400 mt-1">PNG, JPG, WEBP до 10 МБ</p>
           </div>
           <input
             ref={fileInputRef}
@@ -219,12 +218,11 @@ export default function SpaForm() {
                   style={{ width: `${uploadProgress}%`, backgroundColor: '#c69c6d' }}
                 />
               </div>
-              <p className="text-xs text-gray-500 mt-1">{uploadProgress}% uploaded</p>
+              <p className="text-xs text-gray-500 mt-1">{uploadProgress}% загружено</p>
             </div>
           )}
         </div>
 
-        {/* Active */}
         <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
           <input
             type="checkbox"
@@ -232,10 +230,9 @@ export default function SpaForm() {
             onChange={(e) => setForm({ ...form, active: e.target.checked })}
             className="w-4 h-4 rounded accent-navy"
           />
-          Active
+          Активен
         </label>
 
-        {/* Submit */}
         <div className="flex gap-3 pt-2">
           <button
             type="submit"
@@ -243,14 +240,14 @@ export default function SpaForm() {
             className="px-6 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
             style={{ backgroundColor: '#1a2035' }}
           >
-            {saving ? (uploadProgress !== null ? `Uploading ${uploadProgress}%...` : 'Saving...') : isNew ? 'Create Service' : 'Save Changes'}
+            {saving ? (uploadProgress !== null ? `Загрузка ${uploadProgress}%...` : 'Сохранение...') : isNew ? 'Создать услугу' : 'Сохранить'}
           </button>
           <button
             type="button"
             onClick={() => navigate('/spa')}
             className="px-6 py-2.5 rounded-lg text-sm font-medium text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors"
           >
-            Cancel
+            Отмена
           </button>
         </div>
       </form>

@@ -6,6 +6,8 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import CouponList from './pages/coupons/CouponList'
 import CouponForm from './pages/coupons/CouponForm'
+import PromotionList from './pages/promotions/PromotionList'
+import PromotionForm from './pages/promotions/PromotionForm'
 import EventList from './pages/events/EventList'
 import EventForm from './pages/events/EventForm'
 import SpaList from './pages/spa/SpaList'
@@ -32,15 +34,18 @@ export default function App() {
               <Route path="/coupons" element={<CouponList />} />
               <Route path="/coupons/new" element={<CouponForm />} />
               <Route path="/coupons/:id" element={<CouponForm />} />
+              <Route path="/promotions" element={<PromotionList />} />
+              <Route path="/promotions/new" element={<PromotionForm />} />
+              <Route path="/promotions/:id" element={<PromotionForm />} />
               <Route path="/events" element={<EventList />} />
               <Route path="/events/new" element={<EventForm />} />
               <Route path="/events/:id" element={<EventForm />} />
               <Route path="/spa" element={<SpaList />} />
               <Route path="/spa/new" element={<SpaForm />} />
               <Route path="/spa/:id" element={<SpaForm />} />
-              <Route path="/photos" element={<PhotoList />} />
-              <Route path="/photos/new" element={<PhotoForm />} />
-              <Route path="/photos/:id" element={<PhotoForm />} />
+              <Route path="/photos/:restaurant" element={<PhotoList />} />
+              <Route path="/photos/:restaurant/new" element={<PhotoForm />} />
+              <Route path="/photos/:restaurant/:id" element={<PhotoForm />} />
               <Route path="/menu" element={<MenuList />} />
               <Route path="/menu/new" element={<MenuForm />} />
               <Route path="/menu/:id" element={<MenuForm />} />

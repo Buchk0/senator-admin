@@ -17,7 +17,7 @@ export default function SpaList() {
       const snap = await getDocs(q)
       setServices(snap.docs.map((d) => ({ id: d.id, ...d.data() } as SpaService)))
     } catch (err) {
-      setError('Failed to load spa services.')
+      setError('Не удалось загрузить услуги.')
       console.error(err)
     } finally {
       setLoading(false)
@@ -41,13 +41,13 @@ export default function SpaList() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this spa service?')) return
+    if (!confirm('Удалить эту услугу?')) return
     setDeletingId(id)
     try {
       await deleteDoc(doc(db, 'spa_services', id))
       setServices((prev) => prev.filter((s) => s.id !== id))
     } catch (err) {
-      setError('Failed to delete service.')
+      setError('Не удалось удалить услугу.')
       console.error(err)
     } finally {
       setDeletingId(null)
@@ -55,18 +55,18 @@ export default function SpaList() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Spa Services</h1>
-          <p className="text-sm text-gray-500 mt-1">{services.length} service{services.length !== 1 ? 's' : ''}</p>
+          <h1 className="text-2xl font-bold text-gray-900">Услуги спа</h1>
+          <p className="text-sm text-gray-500 mt-1">{services.length} услуг</p>
         </div>
         <Link
           to="/spa/new"
           className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90"
           style={{ backgroundColor: '#1a2035' }}
         >
-          + Add Service
+          + Добавить услугу
         </Link>
       </div>
 
@@ -83,22 +83,22 @@ export default function SpaList() {
       ) : services.length === 0 ? (
         <div className="bg-white rounded-xl border border-gray-100 p-16 text-center">
           <p className="text-4xl mb-3">🧖</p>
-          <p className="text-gray-500 text-sm">No spa services yet.</p>
+          <p className="text-gray-500 text-sm">Услуг пока нет.</p>
           <Link to="/spa/new" className="mt-4 inline-block text-sm font-semibold" style={{ color: '#c69c6d' }}>
-            Add your first service →
+            Добавить первую услугу →
           </Link>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
+          <table className="w-full text-sm min-w-[520px]">
             <thead className="border-b border-gray-100 bg-gray-50">
               <tr>
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Image</th>
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Name</th>
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Duration</th>
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Price</th>
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Active</th>
-                <th className="text-left px-5 py-3 font-semibold text-gray-600">Actions</th>
+                <th className="text-left px-5 py-3 font-semibold text-gray-600">Фото</th>
+                <th className="text-left px-5 py-3 font-semibold text-gray-600">Название</th>
+                <th className="text-left px-5 py-3 font-semibold text-gray-600">Длительность</th>
+                <th className="text-left px-5 py-3 font-semibold text-gray-600">Цена</th>
+                <th className="text-left px-5 py-3 font-semibold text-gray-600">Активен</th>
+                <th className="text-left px-5 py-3 font-semibold text-gray-600">Действия</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -142,14 +142,14 @@ export default function SpaList() {
                         className="text-sm font-medium hover:underline"
                         style={{ color: '#1a2035' }}
                       >
-                        Edit
+                        Изменить
                       </Link>
                       <button
                         onClick={() => handleDelete(service.id)}
                         disabled={deletingId === service.id}
                         className="text-sm font-medium text-red-500 hover:text-red-700 disabled:opacity-50"
                       >
-                        {deletingId === service.id ? 'Deleting…' : 'Delete'}
+                        {deletingId === service.id ? 'Удаление…' : 'Удалить'}
                       </button>
                     </div>
                   </td>

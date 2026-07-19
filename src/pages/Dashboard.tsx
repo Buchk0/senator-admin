@@ -6,6 +6,8 @@ import { seedCoupons } from '../utils/seedCoupons'
 import { seedSpaServices } from '../utils/seedSpaServices'
 import { seedMenu } from '../utils/seedMenu'
 import { seedGallery } from '../utils/seedGallery'
+import { seedRestaurantPhotos } from '../utils/seedRestaurantPhotos'
+import { seedPromotions } from '../utils/seedPromotions'
 
 interface Stats {
   totalCoupons: number
@@ -25,6 +27,10 @@ export default function Dashboard() {
   const [seedMenuMsg, setSeedMenuMsg] = useState('')
   const [seedingGallery, setSeedingGallery] = useState(false)
   const [seedGalleryMsg, setSeedGalleryMsg] = useState('')
+  const [seedingPhotos, setSeedingPhotos] = useState(false)
+  const [seedPhotosMsg, setSeedPhotosMsg] = useState('')
+  const [seedingPromotions, setSeedingPromotions] = useState(false)
+  const [seedPromotionsMsg, setSeedPromotionsMsg] = useState('')
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -56,12 +62,26 @@ export default function Dashboard() {
     setSeedMsg('')
     try {
       await seedCoupons()
-      setSeedMsg('12 купонов успешно добавлены!')
+      setSeedMsg('4 приветственных купона успешно добавлены!')
     } catch (err) {
       setSeedMsg('Ошибка при добавлении купонов. Проверьте консоль.')
       console.error(err)
     } finally {
       setSeeding(false)
+    }
+  }
+
+  const handleSeedPromotions = async () => {
+    setSeedingPromotions(true)
+    setSeedPromotionsMsg('')
+    try {
+      const { created } = await seedPromotions()
+      setSeedPromotionsMsg(`${created} акций (и связанных купонов) успешно добавлены!`)
+    } catch (err) {
+      setSeedPromotionsMsg('Ошибка при добавлении акций. Проверьте консоль.')
+      console.error(err)
+    } finally {
+      setSeedingPromotions(false)
     }
   }
 
@@ -104,6 +124,20 @@ export default function Dashboard() {
       console.error(err)
     } finally {
       setSeedingGallery(false)
+    }
+  }
+
+  const handleSeedPhotos = async () => {
+    setSeedingPhotos(true)
+    setSeedPhotosMsg('')
+    try {
+      const { created } = await seedRestaurantPhotos()
+      setSeedPhotosMsg(`${created} фото ресторанов успешно загружены!`)
+    } catch (err) {
+      setSeedPhotosMsg('Ошибка при загрузке фото. Проверьте консоль.')
+      console.error(err)
+    } finally {
+      setSeedingPhotos(false)
     }
   }
 
@@ -217,6 +251,38 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Seed restaurant photos */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div className="flex items-start gap-4">
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+              style={{ backgroundColor: '#fce7f3' }}
+            >
+              📷
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-gray-900">Заполнить фото ресторанов</p>
+              <p className="text-xs text-gray-500 mt-0.5 mb-4">
+                Загрузить 13 фото (Senator 8 + Balkon 5) в Firebase Storage и создать документы
+                в коллекции restaurantPhotos. Займёт ~30-60 секунд.
+              </p>
+              <button
+                onClick={handleSeedPhotos}
+                disabled={seedingPhotos}
+                className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-60 transition-opacity"
+                style={{ backgroundColor: '#1a2035' }}
+              >
+                {seedingPhotos ? 'Загрузка...' : 'Заполнить фото ресторанов'}
+              </button>
+              {seedPhotosMsg && (
+                <p className={`mt-3 text-sm font-medium ${seedPhotosMsg.startsWith('Ошибка') ? 'text-red-600' : 'text-green-600'}`}>
+                  {seedPhotosMsg}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
         {/* Seed menu pages */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <div className="flex items-start gap-4">
@@ -261,8 +327,9 @@ export default function Dashboard() {
             <div className="flex-1">
               <p className="font-semibold text-gray-900">Заполнить купоны</p>
               <p className="text-xs text-gray-500 mt-0.5 mb-4">
-                Добавить 12 стандартных купонов (Приветственные, Сезонные, Постоянные) в Firestore.
-                Безопасно запускать повторно — существующие купоны будут перезаписаны.
+                Добавить 4 приветственных (разовых) купона в Firestore. Сезонные и постоянные купоны
+                теперь создаются через раздел «Акции» — см. кнопку ниже. Безопасно запускать
+                повторно — существующие купоны будут перезаписаны.
               </p>
               <button
                 onClick={handleSeed}
@@ -275,6 +342,39 @@ export default function Dashboard() {
               {seedMsg && (
                 <p className={`mt-3 text-sm font-medium ${seedMsg.startsWith('Ошибка') ? 'text-red-600' : 'text-green-600'}`}>
                   {seedMsg}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Seed promotions */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div className="flex items-start gap-4">
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+              style={{ backgroundColor: '#ede9fe' }}
+            >
+              📣
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-gray-900">Заполнить акции</p>
+              <p className="text-xs text-gray-500 mt-0.5 mb-4">
+                Добавить 8 акций (4 сезонных + 4 постоянных) — каждая автоматически создаёт
+                связанный купон. Безопасно запускать повторно — существующие акции и купоны
+                будут перезаписаны.
+              </p>
+              <button
+                onClick={handleSeedPromotions}
+                disabled={seedingPromotions}
+                className="px-5 py-2.5 rounded-lg text-sm font-semibold text-white disabled:opacity-60 transition-opacity"
+                style={{ backgroundColor: '#1a2035' }}
+              >
+                {seedingPromotions ? 'Загрузка...' : 'Заполнить акции'}
+              </button>
+              {seedPromotionsMsg && (
+                <p className={`mt-3 text-sm font-medium ${seedPromotionsMsg.startsWith('Ошибка') ? 'text-red-600' : 'text-green-600'}`}>
+                  {seedPromotionsMsg}
                 </p>
               )}
             </div>

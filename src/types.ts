@@ -27,6 +27,27 @@ export interface Coupon {
 
 export type CouponFormData = Omit<Coupon, 'id' | 'createdAt'>
 
+// Promotions are the source of truth for seasonal/always coupons: saving a
+// promotion mirrors the same fields into coupons/{id} (same doc id), and
+// deleting a promotion deletes that mirrored coupon too. See
+// src/pages/promotions/PromotionForm.tsx.
+export type PromotionType = Extract<CouponType, 'seasonal' | 'always'>
+
+export interface Promotion {
+  id: string
+  type: PromotionType
+  emoji: string
+  restaurant: Restaurant
+  active: boolean
+  imageUrl: string
+  title: LocalizedField
+  description: LocalizedField
+  terms: LocalizedField
+  createdAt: Timestamp
+}
+
+export type PromotionFormData = Omit<Promotion, 'id' | 'createdAt'>
+
 export interface HotelEvent {
   id: string
   title: LocalizedField
