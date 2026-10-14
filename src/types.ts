@@ -108,3 +108,26 @@ export interface GalleryPhoto {
 }
 
 export type GalleryPhotoFormData = Omit<GalleryPhoto, 'id' | 'createdAt'>
+
+// Conference hall menus: coffee breaks and business lunches share one
+// collection (conferenceMenus) and are told apart by `type`.
+export type ConferenceMenuType = 'coffee_break' | 'business_lunch'
+
+export interface ConferenceMenu {
+  id: string
+  type: ConferenceMenuType
+  /** "1 вариант" for coffee breaks, "№1" badge for business lunches */
+  title: LocalizedField
+  /** Price per person in KZT, as displayed, e.g. "4 500" */
+  price: string
+  /** One dish per line */
+  items: LocalizedField
+  /** Coffee break only: drinks, one per line */
+  drinks: LocalizedField
+  imageUrl: string
+  order: number
+  active: boolean
+  createdAt: Timestamp
+}
+
+export type ConferenceMenuFormData = Omit<ConferenceMenu, 'id' | 'createdAt'>

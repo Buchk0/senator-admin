@@ -18,6 +18,8 @@ import MenuList from './pages/menu/MenuList'
 import MenuForm from './pages/menu/MenuForm'
 import GalleryList from './pages/gallery/GalleryList'
 import GalleryForm from './pages/gallery/GalleryForm'
+import ConferenceMenuList from './pages/conference/ConferenceMenuList'
+import ConferenceMenuForm from './pages/conference/ConferenceMenuForm'
 
 export default function App() {
   return (
@@ -52,6 +54,9 @@ export default function App() {
               <Route path="/gallery" element={<GalleryList />} />
               <Route path="/gallery/new" element={<GalleryForm />} />
               <Route path="/gallery/:id" element={<GalleryForm />} />
+              <Route path="/conference/:kind" element={<ConferenceMenuList />} />
+              <Route path="/conference/:kind/new" element={<ConferenceMenuForm />} />
+              <Route path="/conference/:kind/:id" element={<ConferenceMenuForm />} />
             </Route>
           </Route>
 

@@ -18,6 +18,8 @@ const navItems: NavItem[] = [
   { to: '/photos/balkon', label: 'Фото Balkon', icon: '📷' },
   { to: '/menu', label: 'Меню', icon: '📖' },
   { to: '/gallery', label: 'Галерея', icon: '🖼' },
+  { to: '/conference/coffee-break', label: 'Кофе-брейк', icon: '☕' },
+  { to: '/conference/business-lunch', label: 'Бизнес-ланч', icon: '🍽' },
 ]
 
 export default function Layout() {
